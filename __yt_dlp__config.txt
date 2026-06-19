@@ -1,0 +1,283 @@
+#_____________________________________________________________________________ log, extended
+#--quiet
+#--no-warnings
+--verbose
+
+#_____________________________________________________________________________ log, traffic - do not share the log-file! it will contain private information.
+--print-traffic
+
+#_____________________________________________________________________________ log, Windows friendly output (console title, no color, use new-lines for progress).
+--console-title
+--newline
+--color never
+
+
+
+#_____________________________________________________________________________ optional. includes extra information in the log.
+--print  "pre_process: ================ step: pre_process  (after video extraction) ======================================================= "
+--print "after_filter: ================ step: after_filter (after video passes filter) ==================================================== "
+--print        "video: ================ step: video        (after --format; before --print/--output) ====================================== "
+--print    "before_dl: ================ step: before_dl    (before each video download) =================================================== "
+--print "post_process: ================ step: post_process (after each video download; default) =========================================== "
+--print   "after_move: ================ step: after_move   (after moving the video file to its final location) ============================ "
+--print  "after_video: ================ step: after_video  (after downloading and processing all formats of a video) ====================== "
+--print     "playlist: ================ step: playlist     (at end of playlist) =========================================================== "
+
+
+
+#_____________________________________________________________________________ disable built-in updaters. instead - use the batch file named "update dependencies".
+#--update-to nightly
+--no-update
+--no-remote-components
+
+
+
+#_____________________________________________________________________________ connection - force direct.
+#--proxy ""
+#_____________________________________________________________________________ connection - HTTP proxy - if you have any. only proxy that can be used with aria2c.
+#--proxy "http://127.0.0.1:18118"
+#_____________________________________________________________________________ connection - SOCKS5h proxy - TOR with HOSTNAME resolve. set "ALL_PROXY=socks5h://127.0.0.1:9150"
+--proxy "socks5h://127.0.0.1:9150"
+
+
+
+#_____________________________________________________________________________ permissive connection. most servers now days will redirect back to https so there is no point in specifying --prefer-insecure unless you know the server serves from http. IPv4 works better with TOR. file:/// can be use as input but it is disabled by default.
+--force-ipv4
+--no-check-certificates
+--prefer-insecure
+#--enable-file-urls
+
+
+
+#_____________________________________________________________________________ allow continue partial download, but not overwriting complete downloads.
+--continue
+--no-overwrites
+--no-post-overwrites
+
+#_____________________________________________________________________________ downloader - ignore errors, continues download.
+--no-abort-on-error
+--skip-unavailable-fragments
+
+#_____________________________________________________________________________ downloader - download more than one HLS segment in parallel. speeds up download.
+--concurrent-fragments 2
+
+#_____________________________________________________________________________ downloader - cache 3M before writing to disk.
+--buffer-size "3M"
+
+#_____________________________________________________________________________ downloader - use HTTP 206 partial fetch to reduce server load if possible. helps with "too many connections" error.
+--http-chunk-size "4M"
+
+#_____________________________________________________________________________ downloader - forbid download if size is more then 5G (buggy, ignored).
+--max-filesize "5000M"
+
+#_____________________________________________________________________________ downloader - maximum rate limit.
+#--limit-rate "1000K"
+
+
+
+#_____________________________________________________________________________ below this, connection is considered throttled and re-fetched (default is 100K).
+--throttled-rate "50K"
+
+#_____________________________________________________________________________ for testing: only download 1 (first) video from a playlist.
+#--max-downloads 1
+
+
+
+#_____________________________________________________________________________ sleep after some actions, reduce server load.
+--sleep-requests 10
+--sleep-interval 10
+--sleep-subtitles 10
+--retry-sleep 10
+
+--retry-sleep "http:linear=3"
+--retry-sleep "fragment:linear=3"
+--retry-sleep "file_access:linear=3"
+--retry-sleep "extractor:linear=3"
+
+--retries 3
+--fragment-retries 3
+--file-access-retries 3
+--extractor-retries 3
+
+
+
+#_____________________________________________________________________________ alternative downloader. aria2c/ffmpeg/wget will not use SOCKS5h proxy and will need HTTP(S) proxy. aria2c is not usable for youtube at all since the connection restrictions.
+#--downloader aria2c
+#--downloader-args 'aria2c:--no-conf --conf-path="./__aria2c.conf" --check-certificate=false --disable-ipv6=true --async-dns=true --async-dns-server=127.0.0.1:15400  --enable-http-pipelining=false --check-integrity=false --enable-http-keep-alive=true --split=2 --min-split-size=100K --max-connection-per-server=16 --max-concurrent-downloads=16'
+#--downloader ffmpeg
+
+
+
+#_____________________________________________________________________________ built-in duplication-check. a local history file. it is set with a fully qualified-path in the batch file. to make sure it is written to the yt-dlp folder. it means that if you want to download the video again you will have to remove the line from that the archive file.
+#--download-archive "__yt_dlp__archive_history.txt"
+###--force-write-archive
+
+
+
+#_____________________________________________________________________________ set NodeJS as the only JavaScript runtime used. keep the order of the commands in here! (first- disable. second- set).
+--no-js-runtimes
+--js-runtimes node
+
+
+
+#_____________________________________________________________________________ embedded thumbnail reduces CPU for preview since there is no need to extract the first frame from the actual video.
+--embed-thumbnail
+--convert-thumbnails "jpg"
+
+
+
+#_____________________________________________________________________________ embed subtitles and cleanup. best to use mkv.
+#--embed-subs
+#--write-subs
+#--write-auto-subs
+#--convert-subtitles srt
+#--sub-langs "en-orig,en,iw-orig,iw"
+#--compat-options no-keep-subs
+
+
+
+#_____________________________________________________________________________ adds meta-data to the file (additional parsing, copied from YTDLnis is not really used).
+--embed-metadata
+--parse-metadata "%(uploader)s:%(artist)s"
+--parse-metadata "%(title)s:%(meta_title)s"
+
+
+
+#_____________________________________________________________________________ chapter marks.
+#--no-embed-chapters
+--embed-chapters
+
+
+
+#_____________________________________________________________________________ mark chapters/remove segments.
+--no-sponsorblock
+###--sponsorblock-api    "https://sponsor.ajay.app"
+###--sponsorblock-api    "https://sponsorblock.kavin.rocks"
+###--sponsorblock-api    "https://sponsorblock.gleesh.net"
+###--sponsorblock-api    "https://sb.theairplan.com"
+###--sponsorblock-api    "https://sb.doubleuu.win"
+###--sponsorblock-api    "https://sponsorblock.hankmccord.dev"
+###--sponsorblock-mark   "preview,poi_highlight"
+###--sponsorblock-remove "hook,music_offtopic,selfpromo,sponsor,intro,outro,filler,interaction"
+
+
+
+#_____________________________________________________________________________ it is set in the batch-file with fully-qualified path. I also used it for local %TEMP% folder. holds various python libs extracted from the bundle exe, and parts of the player javascript-challenge ("deciphered secret") used for downloads. when missing the initial setup of yt-dlp.exe takes longer.
+###--cache-dir "temp_cache"
+###--no-cache-dir
+
+#_____________________________________________________________________________ those are not set in here, but in the yt-dlp cmd batch file. you can add the whole bundle folder to system PATH. 'home' is the folder which you've called the yt-dlp cmd batch file from, it will be used as target for the downloaded file. 'temp' are used for all partial downloads. it makes the entire thing self-contained as no files are copied to your user-profile folders.
+###--paths "home:%WORKING_FOLDER%"
+###--paths "temp:__temp_cache"
+
+
+
+#_____________________________________________________________________________ try setting file's last-modification-time from server.
+--mtime
+
+
+
+#_____________________________________________________________________________ filename characters/length limits.
+--trim-filenames 195
+--windows-filenames
+###--restrict-filenames
+
+
+
+#_____________________________________________________________________________ filename format - (.30B means bytes useful for multibyte/UTF8).
+--output "%(uploader)s - %(upload_date)s - %(title)s.%(ext)s"
+
+###--output "%(title)s.%(ext)s"
+###--output "%(uploader).30B - %(title).170B.%(ext)s" 
+
+###--- show `-` only if entry exists.
+###--output '%(uploader)s%(uploader>:- )%(upload_date)s%(upload_date>:- )%(title)s.%(ext)s'
+
+###--- show `-` only if entry exists. with album.
+###--output '%(uploader)s%(uploader>:- )%(album)s%(album>:- )%(upload_date)s%(upload_date>:- )%(title)s.%(ext)s'
+
+###--- use the first one that is available either uploader or album. `-` if element available
+###--output '%(uploader<|album)s%(uploader<|album>:- )%(upload_date)s%(upload_date>:- )%(title)s.%(ext)s'
+
+
+
+#_____________________________________________________________________________ all post processing that uses ffmpeg and ffprobe (before -i) - detailed log. larger probing of input files. skip errors and continue to generate some output. 
+--postprocessor-args 'ffprobe_i1: -threads 2 -hide_banner -loglevel "datetime+repeat+verbose" -strict "experimental" -err_detect "ignore_err" -probesize "900M" -analyzeduration "900M"'
+--postprocessor-args 'ffmpeg_i1:  -threads 2 -hide_banner -loglevel "datetime+repeat+verbose" -strict "experimental" -err_detect "ignore_err" -probesize "900M" -analyzeduration "900M" -thread_queue_size 16384'
+#_____________________________________________________________________________ all post processing that uses ffmpeg and ffprobe (after -i before output) normalize timestamps, always move ATOM to head of the file, some mux flags.
+--postprocessor-args 'ffmpeg_o1:  -threads 2 -flags "+cgop+loop-unaligned-output_corrupt" -fflags "+genpts+autobsf+discardcorrupt+igndts+ignidx" -avoid_negative_ts "make_zero" -use_wallclock_as_timestamps "1" -max_muxing_queue_size 9999 -movflags "+faststart"'
+#_____________________________________________________________________________ removes meta-data from thumbnail only. might be ignored if thumbnail is already jpg.
+--postprocessor-args 'ThumbnailsConvertor+ffmpeg_o2:   -map_metadata "-1"'
+
+
+
+#_____________________________________________________________________________ audio download - youtube and fallbacks. 128k aac/m4a.
+#--audio-format m4a
+#--remux-video m4a
+#--extract-audio
+#--audio-quality "128K"
+#--format "140/bestaudio[acodec^=mp4a]/bestaudio[acodec^=aac]/bestaudio[ext=mp3]/bestaudio/best"
+
+
+#_____________________________________________________________________________ video download - youtube and fallbacks. m3u8, avc1/mp4 and aac/m4a. low-res is used for mostly audio and subtitles content (sleepy science channels)
+--merge-output-format mkv
+--remux-video mkv
+#--format "91/92/93/160+140/133+140/134+140/worstvideo[vcodec^=avc1]+bestaudio[acodec^=mp4a]/best[height=720][ext=mp4]/best[ext=mp4]/best"
+--format "300/bestvideo[height=720][vcodec^=avc1]+bestaudio[acodec^=mp4a]/best[height=720][ext=mp4]/best[ext=mp4]/best"
+
+
+#_____________________________________________________________________________ try fixing known issues with file.
+--fixup "force"
+
+
+
+
+
+
+
+
+
+
+#_____________________________________________________________________________ sample of youtube formats ("__yt-dlp.cmd" --batch-file "__yt_dlp__list.txt" --list-formats)   ----  this is an entry for about 1 hour video.
+###   
+###   ID  EXT   RESOLUTION FPS CH |   FILESIZE    TBR PROTO | VCODEC           VBR ACODEC      ABR ASR MORE INFO
+###   ---------------------------------------------------------------------------------------------------------------------------
+###   sb3 mhtml 48x27        0    |                   mhtml | images                                   storyboard
+###   sb2 mhtml 80x45        0    |                   mhtml | images                                   storyboard
+###   sb1 mhtml 160x90       0    |                   mhtml | images                                   storyboard
+###   sb0 mhtml 320x180      0    |                   mhtml | images                                   storyboard
+###   139 m4a   audio only      2 |   25.50MiB    49k https | audio only           mp4a.40.5   49k 22k low, ANDR-V, m4a_dash
+###   249 webm  audio only      2 |   31.89MiB    61k https | audio only           opus        61k 48k low, ANDR-V, webm_dash
+###   140 m4a   audio only      2 |   67.69MiB   129k https | audio only           mp4a.40.2  129k 44k medium, ANDR-V, m4a_dash
+###   251 webm  audio only      2 |   84.17MiB   161k https | audio only           opus       161k 48k medium, ANDR-V, webm_dash
+###   91  mp4   256x144     30    | ~ 60.85MiB   116k m3u8  | avc1.4D400C          mp4a.40.5           WEB-S
+###   160 mp4   256x144     30    |   12.18MiB    23k https | avc1.4d400c      23k video only          144p, ANDR-V, mp4_dash
+###   278 webm  256x144     30    |   31.95MiB    61k https | vp9              61k video only          144p, ANDR-V, webm_dash
+###   394 mp4   256x144     30    |   23.29MiB    45k https | av01.0.00M.08    45k video only          144p, ANDR-V, mp4_dash
+###   92  mp4   426x240     30    | ~ 92.70MiB   177k m3u8  | avc1.4D4015          mp4a.40.5           WEB-S
+###   133 mp4   426x240     30    |   22.97MiB    44k https | avc1.4d4015      44k video only          240p, ANDR-V, mp4_dash
+###   242 webm  426x240     30    |   43.32MiB    83k https | vp9              83k video only          240p, ANDR-V, webm_dash
+###   395 mp4   426x240     30    |   21.17MiB    41k https | av01.0.00M.08    41k video only          240p, ANDR-V, mp4_dash
+###   93  mp4   640x360     30    | ~201.98MiB   386k m3u8  | avc1.4D401E          mp4a.40.2           WEB-S
+###   134 mp4   640x360     30    |   42.47MiB    81k https | avc1.4d401e      81k video only          360p, ANDR-V, mp4_dash
+###   18  mp4   640x360     30  2 |  192.05MiB   367k https | avc1.42001E          mp4a.40.2       44k 360p, ANDR-V
+###   243 webm  640x360     30    |   87.27MiB   167k https | vp9             167k video only          360p, ANDR-V, webm_dash
+###   396 mp4   640x360     30    |   43.06MiB    82k https | av01.0.01M.08    82k video only          360p, ANDR-V, mp4_dash
+###   94  mp4   854x480     30    | ~359.82MiB   688k m3u8  | avc1.4D401F          mp4a.40.2           WEB-S
+###   135 mp4   854x480     30    |   66.28MiB   127k https | avc1.4d401f     127k video only          480p, ANDR-V, mp4_dash
+###   244 webm  854x480     30    |  117.25MiB   224k https | vp9             224k video only          480p, ANDR-V, webm_dash
+###   397 mp4   854x480     30    |   73.96MiB   141k https | av01.0.04M.08   141k video only          480p, ANDR-V, mp4_dash
+###   300 mp4   1280x720    60    | ~  1.12GiB  2201k m3u8  | avc1.4D4020          mp4a.40.2           WEB-S
+###   298 mp4   1280x720    60    |  395.90MiB   757k https | avc1.4d4020     757k video only          720p60, ANDR-V, mp4_dash
+###   302 webm  1280x720    60    |  343.04MiB   656k https | vp9             656k video only          720p60, ANDR-V, webm_dash
+###   398 mp4   1280x720    60    |  169.77MiB   325k https | av01.0.08M.08   325k video only          720p60, ANDR-V, mp4_dash
+###   301 mp4   1920x1080   60    | ~  2.06GiB  4044k m3u8  | avc1.64002A          mp4a.40.2           WEB-S
+###   299 mp4   1920x1080   60    |  911.16MiB  1743k https | avc1.64002a    1743k video only          1080p60, ANDR-V, mp4_dash
+###   303 webm  1920x1080   60    |    1.18GiB  2308k https | vp9            2308k video only          1080p60, ANDR-V, webm_dash
+###   399 mp4   1920x1080   60    |  502.04MiB   960k https | av01.0.09M.08   960k video only          1080p60, ANDR-V, mp4_dash
+###   308 webm  2560x1440   60    |    2.41GiB  4724k https | vp9            4724k video only          1440p60, ANDR-V, webm_dash
+###   400 mp4   2560x1440   60    |    1.16GiB  2265k https | av01.0.12M.08  2265k video only          1440p60, ANDR-V, mp4_dash
+###   315 webm  3840x2160   60    |    8.03GiB 15738k https | vp9           15738k video only          2160p60, ANDR-V, webm_dash
+###   401 mp4   3840x2160   60    |    2.81GiB  5494k https | av01.0.13M.08  5494k video only          2160p60, ANDR-V, mp4_dash
+###   
+
